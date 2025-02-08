@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Mes Projets</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="cv.html">Mon CV</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="https://www.polytech-lille.fr/">Mon école</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cv.html">Les liens</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loisirs.html">Mes loisirs</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Mes Projets</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">Pente - Jeu de stratégie</h2>
+                <p class="card-text">
+                    J'ai créé un programme en C permettant de jouer à **Pente**, une variante du morpion sur un plateau de 18 cases.
+                    Il a ensuite été converti en JavaScript pour une version jouable en ligne.
+                </p>
+
+                <h4>Règles du jeu :</h4>
+                <ul>
+                    <li>💠 **Victoire par alignement** : Alignez 5 jetons d'un même symbole.</li>
+                    <li>🔴 **Victoire par prise** : Capturez 10 jetons adverses en les encadrant par 2 de vos jetons.</li>
+                </ul>
+
+                <div class="d-flex gap-2 mt-3">
+                    <a href="projet.html" class="btn btn-primary">🎮 Jouer au jeu</a>
+                    <a href="codeC.html" class="btn btn-outline-dark">👨‍💻 Voir le code C</a>
+                    <a href="codeJS.html" class="btn btn-outline-dark">👨‍💻 Voir le code JS</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coordonnées -->
+    <footer class="bg-light text-center py-4 mt-5">
+        <h3>Me contacter</h3>
+        <p><strong>✉️ Email :</strong> loic.marliot@outlook.fr</p>
+        <p><strong>📞 Téléphone :</strong> 06 59 55 19 56</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code C - Gomoku</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code C</h1>
+    <pre>
+#include <stdio.h>
+#include <stdbool.h>
+#define nbmax 19
+#define point '.'
+typedef struct Case {
+     int occupe; /*0 signifie case vide et 1 case occupée*/
+     char valeur;
+} Case;
+// *******************************************************************//
+// Action : affichage
+// Role : affiche le plateau et les pions de chaque case
+// plateau[][] : D : un plateau de Case
+// *******************************************************************//
+void affichage (Case plateau[nbmax][nbmax]){
+     int i, j;
+     printf("  ");
+     for(i = 1; i <= nbmax; i++){
+         printf("%2d  ", i);
+     }
+     for(i = 0; i < nbmax; i++){
+         printf("\n%2d", i + 1);
+         for(j = 0; j < nbmax; j++){
+             printf(" ");
+             if(plateau[i][j].occupe == false){
+                 printf(".");
+             }
+             else{
+                 printf("%c",plateau[i][j].valeur);
+             }
+             printf("  ");
+         }
+     }
+     printf("\n");
+}
+
+/**********************************************************************/
+// Action : initialisation_plateau
+// Role : Initialise le plateau en déclarant toutes les cases comme non occupées
+/**********************************************************************/
+void initialisation_plateau(Case plateau[nbmax][nbmax]){
+     int i, j;
+     for(i = 0; i < nbmax; i++){
+         for(j = 0; j < nbmax; j++){
+             plateau[i][j].occupe = false;
+         }
+     }
+}
+
+void placer_pion(Case plateau[nbmax][nbmax],int ligne, int colonne,char
+symbole){
+     plateau[ligne][colonne].valeur=symbole;
+     plateau[ligne][colonne].occupe=1;
+}
+
+// *******************************************************************//
+//
+// *******************************************************************//
+
+int prise_de_pions(Case plateau[nbmax][nbmax],int ligne,int colonne,
+char symbole){
+     char s_adverse;
+     int ligne_init=ligne;
+     int colonne_init=colonne;
+     int nb_pions_pris=0;
+     if (symbole=='o'){
+         s_adverse='x'; /*mettre les 3 if dans un et indenter les
+conditions pour supprimer d'un coup*/
+     }
+     else{
+         s_adverse='o' ;
+     }
+     ligne++;
+             if (ligne<=16 && plateau[ligne][colonne].valeur==s_adverse
+&& plateau[ligne+1][colonne].valeur==s_adverse &&
+plateau[ligne+2][colonne].valeur==symbole){ /*On verifie en descendant
+le plateau dans le sens vertical s'il y a deux pions pris*/ /*si ligne
+<16, alors pas besoin de condition supplémentaire*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne+1][colonne].valeur='.';
+             plateau[ligne+1][colonne].occupe=0;
+
+             }
+
+             ligne=ligne_init-1; /*on réinitialise la ligne à ligne de de
+départ*/
+             if (ligne>=2 && plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne-1][colonne].valeur==s_adverse &&
+plateau[ligne-2][colonne].valeur==symbole){ /*On verifie en montant le
+plateau s'il y a deux pions pris*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne-1][colonne].valeur='.';
+             plateau[ligne-1][colonne].occupe=0;
+             }
+             colonne++;
+             ligne=ligne_init;
+             if (colonne <=16 &&
+plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne][colonne+1].valeur==s_adverse &&
+plateau[ligne][colonne+2].valeur==symbole){ /*On verifie à droite le
+plateau s'il y a deux pions pris*/
+
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne][colonne+1].valeur='.';
+             plateau[ligne][colonne+1].occupe=0;
+
+
+             }
+             colonne=colonne_init-1; /*on réinitialise la ligne à ligne
+de de départ*/
+             if (colonne>=2 && plateau[ligne][colonne].valeur==s_adverse
+&& plateau[ligne-1][colonne-1].valeur==s_adverse &&
+plateau[ligne-2][colonne-2].valeur==symbole ){ /*On verifie à gauche le
+plateau dans le sens horizontal s'il y a deux pions pris*/
+             nb_pions_pris=nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne][colonne-1].valeur='.';
+             plateau[ligne][colonne-1].occupe=0;
+
+             }
+             /*Les lignes et colonnes sont vérifiées
+              *vérifier les diagonales :( */
+             ligne=ligne_init+1;
+              colonne=colonne_init+1;
+           if (ligne<=16 && colonne <=16 &&
+plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne+1][colonne+1].valeur==s_adverse &&
+plateau[ligne+2][colonne+2].valeur==symbole){ /*On verifie en descendant
+la diagonale droite le plateau dans le sens vertical s'il y a deux pions
+pris*/ /*si ligne <16, alors pas besoin de condition supplémentaire*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne+1][colonne+1].valeur='.';
+             plateau[ligne+1][colonne+1].occupe=0;
+
+         } ligne=ligne_init-1;
+              colonne=colonne_init-1;
+          if (ligne>=2 && colonne >=2 &&
+plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne-1][colonne-1].valeur==s_adverse &&
+plateau[ligne-2][colonne-2].valeur==symbole){ /*On verifie en montant la
+diagonale gauche le plateau dans le sens vertical s'il y a deux pions
+pris*/ /*si ligne <16, alors pas besoin de condition supplémentaire*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne-1][colonne-1].valeur='.';
+             plateau[ligne+1][colonne-1].occupe=0;
+
+         }
+         ligne=ligne_init-1;
+              colonne=colonne_init+1;
+          if (ligne>=2 && colonne <=16 &&
+plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne-1][colonne+1].valeur==s_adverse &&
+plateau[ligne-2][colonne+2].valeur==symbole){ /*On verifie en montant la
+diagonale droite le plateau dans le sens vertical s'il y a deux pions
+pris*/ /*si ligne <16, alors pas besoin de condition supplémentaire*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne-1][colonne+1].valeur='.';
+             plateau[ligne-1][colonne+1].occupe=0;
+
+         }
+         ligne=ligne_init+1;
+              colonne=colonne_init-1;
+          if (ligne<=16 && colonne >=2 &&
+plateau[ligne][colonne].valeur==s_adverse &&
+plateau[ligne+1][colonne-1].valeur==s_adverse &&
+plateau[ligne+2][colonne-2].valeur==symbole){ /*On verifie en descendant
+la diagonale gauche le plateau dans le sens vertical s'il y a deux pions
+pris*/ /*si ligne <16, alors pas besoin de condition supplémentaire*/
+             nb_pions_pris= nb_pions_pris+2;
+             plateau[ligne][colonne].valeur='.';
+             plateau[ligne][colonne].occupe=0;
+             plateau[ligne+1][colonne-1].valeur='.';
+             plateau[ligne-1][colonne+1].occupe=0;
+          }
+
+     return nb_pions_pris;
+}
+// *******************************************************************//
+//
+// *******************************************************************//
+
+int alignement (Case plateau[nbmax][nbmax],int ligne,int colonne, char
+symbole){
+     int nb_align=1;
+     int i=1;
+     int j=1;
+     /*On vérifie si le pion est aligné avec 4 autres en colonne*/
+     /*vérification par le bas */
+     while ( (ligne+i)<=18 && plateau[ligne+i][colonne].valeur==symbole
+&& nb_align<5){
+         nb_align++;
+         i++;
+     }
+     if (nb_align==5){
+         return 1;
+     }
+     /*vérification par le haut*/
+     i=1;
+     while ( (ligne-i)>=0 && plateau[ligne-i][colonne].valeur==symbole &&
+nb_align<5){
+         nb_align++;
+         i--;
+     }
+     if (nb_align==5){
+          return 1;
+     }
+     /*On vérifie si le pion est aligné avec 4 autres en ligne*/
+     /*vérification par la droite */
+
+     nb_align=1;
+     while ( (colonne+j)<=18 && plateau[ligne][colonne+j].valeur==symbole
+&& nb_align<5){
+         nb_align++;
+         j++;
+     }
+     if (nb_align==5){
+         return 1;
+     }
+     /*vérification par la gauche */
+     j=1;
+     while ( (colonne-j)>=0  && plateau[ligne][colonne-j].valeur==symbole
+&& nb_align<5){
+         nb_align++;
+         j--;
+     }
+     if (nb_align==5){
+          return 1;
+     }
+     nb_align=1;
+      i=1;
+      j=1;
+     /*On vérifie si le pion est aligné avec 4 autres en diagonal de
+direction \ */
+     /* En descendant vers la droite*/
+     while (  (colonne+j)<=18 && (ligne+i)<=18  &&
+plateau[ligne+i][colonne+j].valeur==symbole && nb_align<5){
+         nb_align++;
+         j++;
+         i++;
+     }
+     if (nb_align==5){
+          return 1;
+     }
+     i=1;
+      j=1;
+      /*en montant vers la gauche*/
+     while ((colonne-j)>=0 && (ligne-i)>=0  &&
+plateau[ligne-i][colonne-j].valeur==symbole && nb_align<5){
+         nb_align++;
+         j--;
+         i--;
+     }
+     if (nb_align==5){
+         return 1;
+     }
+      /*On vérifie si le pion est aligné avec 4 autres en diagonal de
+direction / */
+      /*En montant vers la droite */
+      i=1;
+      j=1;
+      nb_align=1;
+     while ( (colonne+j)<=18 && (ligne-i)>=0  &&
+plateau[ligne-i][colonne+j].valeur==symbole && nb_align<5){
+         nb_align++;
+         j++;
+         i--;
+     }
+     if (nb_align==5){
+         return 1;
+     }
+     /*En descendant vers la gauche*/
+     while ( (colonne+j)<=18 && (ligne-i)>=0  &&
+plateau[ligne-i][colonne+j].valeur==symbole && nb_align<5){
+         nb_align++;
+         j--;
+         i++;
+     }
+     if (nb_align==5){
+          return 1;
+     }
+  return 0;
+}
+
+
+int main(){
+     Case plateau[nbmax][nbmax];
+     // int i;
+     int tour=0;
+     int victoire=0; /*Le 0 signifie pas de gagnant, dans le cas d'une
+victoire, cette valeur passera à 1*/
+     char symbole;
+     int ligne;
+     int colonne;
+     int prise_des_o=0;
+     int prise_des_x=0;
+     initialisation_plateau(plateau);
+     affichage(plateau);
+     printf("\nLes lignes et colonnes saisis devront être compris entre 1et 19 sauf en cas de déclaration de forfait(0,0), de plus si la case est occupée, la saisie ne sera pas possible\n");
+     symbole = 'o' ;
+     while(victoire == 0){
+         do{
+
+             printf("\n Tour n°:%d\n,Tour du joueur %c :\n saisir la ligne et la colonne sous forme :i,j\n",tour , symbole);
+             scanf("%d,%d",&ligne,&colonne);
+         }
+         while ((ligne<0 || ligne>20) || (colonne<0 || colonne>20) || (plateau[ligne-1][colonne-1].occupe==1));
+         if (ligne==0 && colonne==0){
+             printf("les %c ont gagné\n",symbole);
+             victoire=1;
+         }
+         else{
+
+             placer_pion(plateau,ligne-1,colonne-1,symbole);
+
+             if (tour>=4){/*4 car les o ne pourront prendre deux pions
+qu'après 5 tours minimum*/
+                 if(symbole == 'o'){
+
+prise_des_o=prise_de_pions(plateau,ligne-1,colonne-1,symbole) +prise_des_o;
+                 if (prise_des_o>=10){
+                         printf("les o ont gagnés par prise \n");
+                         victoire=1;
+                     }
+                 }
+                 else{
+
+prise_des_x=prise_de_pions(plateau,ligne-1,colonne-1,symbole) +prise_des_x;
+                 if (prise_des_x>=10){
+                         printf("les x ont gagnés par prise \n");
+                         victoire=1;
+                     }
+                 }
+                 }
+             }
+
+                 if (tour>=9 && victoire!=1){
+
+victoire=alignement(plateau,ligne-1,colonne-1,symbole);
+                 }
+             affichage(plateau);
+             printf("le score de pions pris   (o : %d) , (x : %d)\n",prise_des_o , prise_des_x) ;
+             tour=tour+1;
+             if (victoire==1){
+                 printf("les %c ont gagné par alignement \n",symbole);
+             }
+             else{
+                 if(symbole == 'o'){
+                     symbole = 'x' ;
+                 }
+                 else{
+                     symbole = 'o' ;
+                 }
+             }
+
+     }
+
+     return 0;
+}
+
+    </pre>
+</body>
+</html>
