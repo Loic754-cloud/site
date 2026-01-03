@@ -37,11 +37,90 @@
 <h1>Exemple de code Python</h1>
 
 <pre><code class="language-python">
-def hello():
-    print("Bonjour le monde")
 
-if __name__ == "__main__":
-    hello()
+
+import autograd as ag
+import autograd.numpy as np
+import scipy.linalg as nla
+import math
+import scipy
+A = np.array ([[0,0,1],[0,0.5,1],[2,2.5,3],[6,0,3]], dtype=np.float64)
+y = np.array ([0,1,1,0], dtype=np.float64)
+p, m = A.shape
+
+n = 10
+Tx = np.array ([i for i in range (0,n)], dtype=np.float64)
+print(Tx)
+Abis=np.array ([[Tx[0],-1],[Tx[1],-1],[Tx[2],-1],[Tx[3],-1],[Tx[4],-1],[Tx[5],-1],[Tx[6],-1],[Tx[7],-1],[Tx[8],-1],[Tx[9],-1]], dtype=np.float64)
+Ty = np.array ([55.7, 55.7, 56, 57.5, 62.3, 72.9, 75, 79.7, 79.9, 81.5], dtype=np.float64)
+
+mu,k=55.6,26
+b=np.array([scipy.special.logit((x-mu)/k) for x in Ty])
+print(b)
+Q1,R1=nla.qr(Abis,mode='economic')
+Q1Tb =  np.dot(np.transpose(Q1),b)
+alpha,p = nla.solve_triangular(R1,Q1Tb,lower=False)
+print(alpha)#1.2341630823353829
+            #6.188561242750095
+print(p)
+#Q4
+def q4(x,u):
+    k,alpha,p,mu=u
+    expo=math.exp(alpha-p*x)
+    return k/(1+expo)+mu
+def error(u):
+    
+ 
+    erreur=np.array([(Ty[i]-q4(Tx[i],u))**2 for i in Tx])
+    return erreur
+
+un=np.array([k,alpha,p,mu])
+erreur=np.array([(Ty[i]-q4(Tx[i],un))**2 for i in Tx], dtype=np.float64)
+for _ in range(1000):
+    h=nla.solve(-ag.hessian(error)(un),ag.jacobian(error)(un))
+    un=un+h
+print(un)
+p, m = A.shape
+
+q = 5
+
+
+def sigmoid (w) :
+    return 1. / (1. + np.exp (- w))
+
+def reseau (w, A) :
+    l0 = A
+    A_w = np.dot (A, w[0:m,0:q])
+    l1 = sigmoid (A_w) #
+    A_w = np.dot (l1, w[m,0:q])
+    l2 = sigmoid (A_w)
+    return l2
+
+# Les deux fonctions suivantes pourraient recevoir A et y en paramètre
+def residuel (w) :
+    return y - reseau (w, A)
+
+def objectif (w) :
+    r = residuel (w)
+    return 1/2 * np.sum (r*r)
+
+g = ag.grad (objectif)
+
+# Poids aléatoires initialement pris entre -1 et 1
+np.random.seed (1)
+w = 2 * np.random.random ((m+1, q)) - 1.
+for i in range (500) :
+    h = - g (w)
+    w = w + h
+
+for i in range (0, p) :
+    a = A[i,:] ; print (a, '->', reseau (w, a))
+
+a = np.array ([1,1,0]) ; print (a, '->', reseau (w, a))
+a = np.array ([1,0,0]) ; print (a, '->', reseau (w, a))
+a = np.array ([0,1,0]) ; print (a, '->', reseau (w, a))
+a = np.array ([0,0,0]) ; print (a, '->', reseau (w, a))
+
 </code></pre>
 
 </body>
